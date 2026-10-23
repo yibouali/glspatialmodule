@@ -16,6 +16,6 @@ jobs:
         run: pip install -r requirements.txt
       - name: test
         run: |
-             pytest --nbval-lax *.ipynb
+             pytest --nbval-lax --nbval-current-env *.ipynb
 #      - name: render
 #        run: myst build climate.md --pdf
