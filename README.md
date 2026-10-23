@@ -5,8 +5,8 @@
 
 ## Team Members
 
-🦸
-🦹
+🦸Yassin Bouali
+🦹Charli Jones
 
 ## 🎓 Learning Objectives
 
