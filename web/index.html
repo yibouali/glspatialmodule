@@ -67,6 +67,17 @@
       .legend-item { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; }
       .swatch { width: 10px; height: 10px; border-radius: 3px; }
       #map-status { margin: 0; color: var(--muted); font-size: 11px; }
+      .article { max-width: 850px; margin: 64px auto 0; }
+      .article-section { padding: 27px 0; border-bottom: 1px solid var(--line); }
+      .article-section h2 { margin-bottom: 14px; font: 500 32px/1.15 var(--serif); letter-spacing: -.02em; }
+      .article-section h3 { margin: 22px 0 10px; font: 500 23px/1.25 var(--serif); }
+      .article-section p { color: var(--muted); font-size: 15px; line-height: 1.85; }
+      .figure { margin: 25px 0 8px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--white); }
+      .figure img { display: block; width: 100%; height: auto; border-radius: 5px; }
+      .figure figcaption { padding: 12px 3px 2px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+      .figure figcaption strong { color: var(--ink); }
+      .article-callout { margin: 22px 0; padding: 18px 20px; border-left: 3px solid var(--green); background: #edf1e9; color: var(--muted); font-size: 13px; line-height: 1.75; }
+      .article-callout a { color: var(--green); font-weight: 700; }
       .content-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 60px; padding: 58px 4px 0; }
       .section-label { margin-bottom: 12px; color: var(--green); font-size: 11px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
       h2.section-title { margin-bottom: 14px; font: 500 31px/1.15 var(--serif); letter-spacing: -.02em; }
@@ -95,6 +106,11 @@
         .map-tag { font-size: 10px; }
         #map { height: 390px; min-height: 300px; }
         .map-footer { align-items: flex-start; padding: 13px 16px; }
+        .article { margin-top: 44px; }
+        .article-section { padding: 22px 0; }
+        .article-section h2 { font-size: 28px; }
+        .article-section p { font-size: 14px; }
+        .figure { margin-inline: -4px; padding: 9px; }
         .content-grid { grid-template-columns: 1fr; gap: 32px; padding-top: 42px; }
         footer { padding: 18px 20px 24px; }
       }
@@ -144,6 +160,45 @@
           <p id="map-status" aria-live="polite">Loading archived district boundaries…</p>
         </div>
       </section>
+
+      <article class="article" aria-label="Inequalities in vegetation access in urban communities">
+        <section class="article-section" aria-labelledby="discussion-title">
+          <p class="section-label">The investigation</p>
+          <h2 id="discussion-title">Inequalities in Vegetation Access in Urban Communities</h2>
+          <h3>What will we discuss?</h3>
+          <p>In this article, we will be covering how historical racial discrimination and redlining has led to modern inequalities in access to vegetation for the inhabitants of Oakland, California, as well as how our understanding of it impacts what we know about racism as a whole in the United States.</p>
+        </section>
+
+        <section class="article-section" aria-labelledby="historical-title">
+          <h3 id="historical-title">Historical Drivers of Urban Environmental Disparities</h3>
+          <p>In Science, Schell et al. (2020) demonstrate how 20th-century housing policies—specifically redlining and classist zoning practices—shaped modern urban ecological patterns. These historical socioeconomic decisions created lasting structural inequities in canopy cover, microclimates, and biodiversity across urban communities. Analyzing these historical drivers is essential for understanding present-day environmental disparities and informing equitable urban planning and conservation strategies moving forward.</p>
+          <aside class="article-callout">Figure 2 in the Schell paper shows how NDVI (Normalized Difference Vegetation Index) tracks historical redlining. <a href="https://doi.org/10.1126/science.aay4497">Read the paper ↗</a></aside>
+        </section>
+
+        <section class="article-section" aria-labelledby="satellite-title">
+          <h2 id="satellite-title">Satellite Imagery and NDVI</h2>
+          <p>To quantify local environmental disparities, we retrieved Sentinel-2 satellite imagery via the Earth Search STAC catalog and calculated the Normalized Difference Vegetation Index (NDVI). By leveraging the contrast between near-infrared (NIR) and red light reflectance bands, we mapped the spatial distribution of urban tree canopy across Oakland, California. This spatial framework provides a quantitative baseline to evaluate the broader ecological and public health implications for Oakland residents.</p>
+          <figure class="figure">
+            <img src="ndvi_plot.png" alt="Oakland satellite image visualized as an NDVI vegetation index, with higher vegetation values shown in green." loading="lazy" />
+            <figcaption><strong>NDVI (Vegetation Index) — Oakland.</strong> Satellite-derived vegetation index for the study area. Greener colors indicate higher NDVI values in the selected image.</figcaption>
+          </figure>
+        </section>
+
+        <section class="article-section" aria-labelledby="overlay-title">
+          <h2 id="overlay-title">Integrating Raster and Vector Datasets</h2>
+          <p>Next, we performed a spatial overlay by combining the raster-derived NDVI layer with the Home Owners' Loan Corporation (HOLC) redlining polygon vector data to compute zonal statistics. Aggregating vegetation metrics across historical HOLC security zones allows us to quantify mean canopy cover per neighborhood across Oakland. This computational approach establishes a direct link between historical housing classifications and present-day ecological metrics.</p>
+          <figure class="figure">
+            <img src="bar_chart.png" alt="Bar chart of average vegetation NDVI by historic Oakland redlining grade: A is highest, followed by B, D, and C." loading="lazy" />
+            <figcaption><strong>Average Vegetation (NDVI) by Historical Redlining Grade in Oakland.</strong> Mean NDVI by archived HOLC grade in this analysis.</figcaption>
+          </figure>
+        </section>
+
+        <section class="article-section" aria-labelledby="conclusion-title">
+          <h2 id="conclusion-title">Conclusion: Ecological Consequences of Historical Redlining</h2>
+          <p>The resulting zonal statistics reveal a clear disparity in urban canopy cover across Oakland's historical HOLC security zones. Neighborhoods designated as Grade C ("Definitely Declining") and Grade D ("Hazardous") consistently exhibit significantly lower mean NDVI values relative to Grade A and B zones.</p>
+          <p>These spatial patterns align directly with the structural framework outlined by Schell et al. (2020), demonstrating how historical housing discrimination exerts a lingering legacy effect on urban ecosystems. Because discriminatory policies systematically restricted capital investment in marginalized communities, their ecological impacts—such as diminished vegetation cover, heightened microclimate temperatures, and reduced ecosystem services—persist long after formal policy repeal. Quantifying these spatial inequities provides the empirical foundation necessary to evaluate environmental justice initiatives and guide targeted, equitable urban planning interventions.</p>
+        </section>
+      </article>
 
       <section class="content-grid" aria-label="Module overview and sources">
         <div>
