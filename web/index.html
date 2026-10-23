@@ -3,320 +3,41 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="An interactive learning module exploring historical redlining, urban vegetation, and spatial data in Oakland, California."
-    />
-    <meta name="theme-color" content="#f6f5ef" />
-    <title>Mapping redlining &amp; urban nature | Spatial Fieldnotes</title>
-    <link rel="preconnect" href="https://unpkg.com" />
-    <link rel="preconnect" href="https://tile.openstreetmap.org" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
-    />
+    <title>Inequalities in Vegetation Access in Urban Communities</title>
     <style>
-      :root {
-        color-scheme: light;
-        --ink: #192b28;
-        --muted: #5c6b64;
-        --paper: #f6f5ef;
-        --white: #fffefa;
-        --green: #245b48;
-        --line: #dce2d8;
-        --serif: Georgia, "Times New Roman", serif;
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        color: var(--ink);
-        background: var(--paper);
-        scroll-behavior: smooth;
-      }
-
-      * { box-sizing: border-box; }
-      body { margin: 0; min-width: 320px; }
-      a { color: inherit; }
-      .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1180px;
-        margin: auto;
-        padding: 22px 28px;
-      }
-      .brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 750; letter-spacing: .11em; text-transform: uppercase; }
-      .brand-mark { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: var(--green); color: white; font-size: 16px; }
-      .top-link { color: var(--muted); font-size: 14px; text-decoration: none; }
-      .top-link:hover, .text-link:hover { color: var(--green); text-decoration: underline; text-underline-offset: 4px; }
-      main { max-width: 1180px; margin: auto; padding: 34px 28px 76px; }
-      .hero { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 55px; align-items: end; padding: 24px 0 38px; }
-      .eyebrow { margin: 0 0 17px; color: var(--green); font-size: 12px; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
-      h1, h2, h3, p { margin-top: 0; }
-      h1 { max-width: 760px; margin-bottom: 18px; font: 500 clamp(42px, 6vw, 76px)/.99 var(--serif); letter-spacing: -.045em; }
-      .hero-copy { max-width: 690px; margin-bottom: 0; color: var(--muted); font-size: 17px; line-height: 1.75; }
-      .hero-note { border-left: 1px solid #a8b8a9; padding: 5px 0 5px 19px; color: var(--muted); font-size: 13px; line-height: 1.7; }
-      .hero-note strong { display: block; margin-bottom: 6px; color: var(--ink); font-size: 11px; letter-spacing: .13em; text-transform: uppercase; }
-      .map-shell { overflow: hidden; border: 1px solid #d7ded3; border-radius: 12px; background: var(--white); box-shadow: 0 12px 36px #223b2b12; }
-      .map-heading { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 18px 22px; }
-      .map-heading h2 { margin: 0; font: 500 22px var(--serif); }
-      .map-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
-      .map-tag { flex: 0 0 auto; padding: 7px 10px; border-radius: 99px; background: #edf2e9; color: var(--green); font-size: 11px; font-weight: 700; }
-      #map { height: min(58vw, 480px); min-height: 330px; background: #e7ece3; }
-      .map-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 20px; border-top: 1px solid #e5e9e2; }
-      .legend { display: flex; flex-wrap: wrap; gap: 14px; }
-      .legend-item { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; }
-      .swatch { width: 10px; height: 10px; border-radius: 3px; }
-      #map-status { margin: 0; color: var(--muted); font-size: 11px; }
-      .article { max-width: 850px; margin: 64px auto 0; }
-      .article-section { padding: 27px 0; border-bottom: 1px solid var(--line); }
-      .article-section h2 { margin-bottom: 14px; font: 500 32px/1.15 var(--serif); letter-spacing: -.02em; }
-      .article-section h3 { margin: 22px 0 10px; font: 500 23px/1.25 var(--serif); }
-      .article-section p { color: var(--muted); font-size: 15px; line-height: 1.85; }
-      .figure { margin: 25px 0 8px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--white); }
-      .figure img { display: block; width: 100%; height: auto; border-radius: 5px; }
-      .figure figcaption { padding: 12px 3px 2px; color: var(--muted); font-size: 12px; line-height: 1.6; }
-      .figure figcaption strong { color: var(--ink); }
-      .article-callout { margin: 22px 0; padding: 18px 20px; border-left: 3px solid var(--green); background: #edf1e9; color: var(--muted); font-size: 13px; line-height: 1.75; }
-      .article-callout a { color: var(--green); font-weight: 700; }
-      .content-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 60px; padding: 58px 4px 0; }
-      .section-label { margin-bottom: 12px; color: var(--green); font-size: 11px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
-      h2.section-title { margin-bottom: 14px; font: 500 31px/1.15 var(--serif); letter-spacing: -.02em; }
-      .body-copy { margin-bottom: 14px; color: var(--muted); font-size: 14px; line-height: 1.8; }
-      .steps { display: grid; gap: 0; margin-top: 18px; }
-      .step { display: grid; grid-template-columns: 38px 1fr; gap: 12px; padding: 15px 0; border-top: 1px solid var(--line); }
-      .step-num { color: #8a9c8a; font: 18px var(--serif); }
-      .step h3 { margin: 0 0 5px; font-size: 13px; }
-      .step p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
-      .source-card { padding: 23px; border: 1px solid var(--line); border-radius: 10px; background: #eeefe7; }
-      .source-card h3 { margin: 0 0 10px; font: 500 21px var(--serif); }
-      .source-card p { margin-bottom: 15px; color: var(--muted); font-size: 13px; line-height: 1.7; }
-      .text-link { color: var(--green); font-size: 13px; font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-      .source-links { display: flex; flex-wrap: wrap; gap: 12px 20px; }
-      .note { margin-top: 18px; color: #77837b; font-size: 11px; line-height: 1.65; }
-      footer { display: flex; justify-content: space-between; gap: 20px; max-width: 1180px; margin: 0 auto; padding: 20px 28px 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
-      .leaflet-popup-content { line-height: 1.6; }
-      .popup-title { margin: 0 0 3px; font-weight: 750; }
-      .popup-detail { margin: 0; color: #5c6b64; }
-      @media (max-width: 720px) {
-        .topbar { padding: 17px 20px; }
-        main { padding: 22px 20px 54px; }
-        .hero { grid-template-columns: 1fr; gap: 22px; padding-top: 15px; }
-        .hero-note { max-width: 410px; }
-        .map-heading { align-items: flex-start; padding: 16px; }
-        .map-tag { font-size: 10px; }
-        #map { height: 390px; min-height: 300px; }
-        .map-footer { align-items: flex-start; padding: 13px 16px; }
-        .article { margin-top: 44px; }
-        .article-section { padding: 22px 0; }
-        .article-section h2 { font-size: 28px; }
-        .article-section p { font-size: 14px; }
-        .figure { margin-inline: -4px; padding: 9px; }
-        .content-grid { grid-template-columns: 1fr; gap: 32px; padding-top: 42px; }
-        footer { padding: 18px 20px 24px; }
-      }
-      @media (prefers-reduced-motion: reduce) { :root { scroll-behavior: auto; } }
+      body { max-width: 850px; margin: 40px auto; padding: 0 20px; color: #222; font: 16px/1.7 Georgia, serif; }
+      h1, h2, h3 { line-height: 1.25; }
+      img { display: block; max-width: 100%; height: auto; margin: 24px auto; }
+      figure { margin: 24px 0; }
+      figcaption { color: #555; font-size: .9rem; }
+      a { color: #245b48; }
     </style>
   </head>
   <body>
-    <header class="topbar">
-      <a class="brand" href="#top" aria-label="Spatial Fieldnotes home">
-        <span class="brand-mark" aria-hidden="true">⌁</span>
-        Spatial Fieldnotes
-      </a>
-      <a class="top-link" href="https://github.com/yibouali/glspatialmodule">View project on GitHub ↗</a>
-    </header>
+    <h1>Inequalities in Vegetation Access in Urban Communities</h1>
 
-    <main id="top">
-      <section class="hero" aria-labelledby="page-title">
-        <div>
-          <p class="eyebrow">An urban ecology learning module · Oakland, California</p>
-          <h1 id="page-title">Where history meets the urban landscape.</h1>
-          <p class="hero-copy">
-            Explore Oakland’s historic redlining map and learn how spatial data can help us ask careful questions about neighborhood environments. This module brings together vector data, satellite imagery, and interactive mapping.
-          </p>
-        </div>
-        <aside class="hero-note">
-          <strong>About this map</strong>
-          Historic neighborhood grades are shown as they appear in the Mapping Inequality archive. They document a history of discriminatory housing policy; they are not a measure of any neighborhood or resident today.
-        </aside>
-      </section>
+    <h2>What will we discuss?</h2>
+    <p>In this article, we will be covering how historical racial discrimination and redlining has led to modern inequalities in access to vegetation for the inhabitants of Oakland, California, as well as how our understanding of it impacts what we know about racism as a whole in the United States.</p>
 
-      <section class="map-shell" aria-labelledby="map-title">
-        <div class="map-heading">
-          <div>
-            <h2 id="map-title">Oakland redlining districts</h2>
-            <p>Hover or tap a district to see its archived grade.</p>
-          </div>
-          <span class="map-tag">Historic HOLC grades</span>
-        </div>
-        <div id="map" role="region" aria-label="Interactive map of historic Oakland redlining districts"></div>
-        <div class="map-footer">
-          <div class="legend" aria-label="Map legend">
-            <span class="legend-item"><span class="swatch" style="background:#4daf4a"></span>A · Best</span>
-            <span class="legend-item"><span class="swatch" style="background:#377eb8"></span>B · Still desirable</span>
-            <span class="legend-item"><span class="swatch" style="background:#ffff33"></span>C · Declining</span>
-            <span class="legend-item"><span class="swatch" style="background:#e41a1c"></span>D · Hazardous</span>
-          </div>
-          <p id="map-status" aria-live="polite">Loading archived district boundaries…</p>
-        </div>
-      </section>
+    <h2>Historical Drivers of Urban Environmental Disparities</h2>
+    <p>In Science, Schell et al. (2020) demonstrate how 20th-century housing policies—specifically redlining and classist zoning practices—shaped modern urban ecological patterns. These historical socioeconomic decisions created lasting structural inequities in canopy cover, microclimates, and biodiversity across urban communities. Analyzing these historical drivers is essential for understanding present-day environmental disparities and informing equitable urban planning and conservation strategies moving forward.</p>
 
-      <article class="article" aria-label="Inequalities in vegetation access in urban communities">
-        <section class="article-section" aria-labelledby="discussion-title">
-          <p class="section-label">The investigation</p>
-          <h2 id="discussion-title">Inequalities in Vegetation Access in Urban Communities</h2>
-          <h3>What will we discuss?</h3>
-          <p>In this article, we will be covering how historical racial discrimination and redlining has led to modern inequalities in access to vegetation for the inhabitants of Oakland, California, as well as how our understanding of it impacts what we know about racism as a whole in the United States.</p>
-        </section>
+    <h2>Satellite Imagery and NDVI</h2>
+    <p>To quantify local environmental disparities, we retrieved Sentinel-2 satellite imagery via the Earth Search STAC catalog and calculated the Normalized Difference Vegetation Index (NDVI). By leveraging the contrast between near-infrared (NIR) and red light reflectance bands, we mapped the spatial distribution of urban tree canopy across Oakland, California. This spatial framework provides a quantitative baseline to evaluate the broader ecological and public health implications for Oakland residents.</p>
+    <p><strong>Figure 2</strong> in the Schell paper shows how NDVI (Normalized Difference Vegetation Index) tracks historical redlining.</p>
+    <figure>
+      <img src="ndvi_plot.png" alt="NDVI (Vegetation Index) - Oakland" />
+    </figure>
 
-        <section class="article-section" aria-labelledby="historical-title">
-          <h3 id="historical-title">Historical Drivers of Urban Environmental Disparities</h3>
-          <p>In Science, Schell et al. (2020) demonstrate how 20th-century housing policies—specifically redlining and classist zoning practices—shaped modern urban ecological patterns. These historical socioeconomic decisions created lasting structural inequities in canopy cover, microclimates, and biodiversity across urban communities. Analyzing these historical drivers is essential for understanding present-day environmental disparities and informing equitable urban planning and conservation strategies moving forward.</p>
-          <aside class="article-callout">Figure 2 in the Schell paper shows how NDVI (Normalized Difference Vegetation Index) tracks historical redlining. <a href="https://doi.org/10.1126/science.aay4497">Read the paper ↗</a></aside>
-        </section>
+    <h2>Integrating Raster and Vector Datasets</h2>
+    <p>Next, we performed a spatial overlay by combining the raster-derived NDVI layer with the Home Owners' Loan Corporation (HOLC) redlining polygon vector data to compute zonal statistics. Aggregating vegetation metrics across historical HOLC security zones allows us to quantify mean canopy cover per neighborhood across Oakland. This computational approach establishes a direct link between historical housing classifications and present-day ecological metrics.</p>
+    <figure>
+      <img src="bar_chart.png" alt="Average Vegetation (NDVI) by Historical Redlining Grade in Oakland" />
+      <figcaption>Average Vegetation (NDVI) by Historical Redlining Grade in Oakland</figcaption>
+    </figure>
 
-        <section class="article-section" aria-labelledby="satellite-title">
-          <h2 id="satellite-title">Satellite Imagery and NDVI</h2>
-          <p>To quantify local environmental disparities, we retrieved Sentinel-2 satellite imagery via the Earth Search STAC catalog and calculated the Normalized Difference Vegetation Index (NDVI). By leveraging the contrast between near-infrared (NIR) and red light reflectance bands, we mapped the spatial distribution of urban tree canopy across Oakland, California. This spatial framework provides a quantitative baseline to evaluate the broader ecological and public health implications for Oakland residents.</p>
-          <figure class="figure">
-            <img src="ndvi_plot.png" alt="Oakland satellite image visualized as an NDVI vegetation index, with higher vegetation values shown in green." loading="lazy" />
-            <figcaption><strong>NDVI (Vegetation Index) — Oakland.</strong> Satellite-derived vegetation index for the study area. Greener colors indicate higher NDVI values in the selected image.</figcaption>
-          </figure>
-        </section>
-
-        <section class="article-section" aria-labelledby="overlay-title">
-          <h2 id="overlay-title">Integrating Raster and Vector Datasets</h2>
-          <p>Next, we performed a spatial overlay by combining the raster-derived NDVI layer with the Home Owners' Loan Corporation (HOLC) redlining polygon vector data to compute zonal statistics. Aggregating vegetation metrics across historical HOLC security zones allows us to quantify mean canopy cover per neighborhood across Oakland. This computational approach establishes a direct link between historical housing classifications and present-day ecological metrics.</p>
-          <figure class="figure">
-            <img src="bar_chart.png" alt="Bar chart of average vegetation NDVI by historic Oakland redlining grade: A is highest, followed by B, D, and C." loading="lazy" />
-            <figcaption><strong>Average Vegetation (NDVI) by Historical Redlining Grade in Oakland.</strong> Mean NDVI by archived HOLC grade in this analysis.</figcaption>
-          </figure>
-        </section>
-
-        <section class="article-section" aria-labelledby="conclusion-title">
-          <h2 id="conclusion-title">Conclusion: Ecological Consequences of Historical Redlining</h2>
-          <p>The resulting zonal statistics reveal a clear disparity in urban canopy cover across Oakland's historical HOLC security zones. Neighborhoods designated as Grade C ("Definitely Declining") and Grade D ("Hazardous") consistently exhibit significantly lower mean NDVI values relative to Grade A and B zones.</p>
-          <p>These spatial patterns align directly with the structural framework outlined by Schell et al. (2020), demonstrating how historical housing discrimination exerts a lingering legacy effect on urban ecosystems. Because discriminatory policies systematically restricted capital investment in marginalized communities, their ecological impacts—such as diminished vegetation cover, heightened microclimate temperatures, and reduced ecosystem services—persist long after formal policy repeal. Quantifying these spatial inequities provides the empirical foundation necessary to evaluate environmental justice initiatives and guide targeted, equitable urban planning interventions.</p>
-        </section>
-      </article>
-
-      <section class="content-grid" aria-label="Module overview and sources">
-        <div>
-          <p class="section-label">The learning module</p>
-          <h2 class="section-title">Read the landscape with data.</h2>
-          <p class="body-copy">
-            Historical redlining offers one lens for examining how policy shaped cities. In the notebook, you will work with the archived neighborhood boundaries and explore a workflow for comparing them with vegetation information from satellite imagery.
-          </p>
-          <p class="body-copy">
-            The goal is to practice spatial analysis and interpret evidence in context—not to treat a map or a single metric as a complete explanation of present-day environmental conditions.
-          </p>
-          <div class="steps">
-            <article class="step">
-              <span class="step-num">01</span>
-              <div><h3>Work with vector data</h3><p>Load neighborhood boundaries, filter records with Ibis, and explore their geography.</p></div>
-            </article>
-            <article class="step">
-              <span class="step-num">02</span>
-              <div><h3>Explore satellite imagery</h3><p>Discover raster data and learn how vegetation indices can be calculated.</p></div>
-            </article>
-            <article class="step">
-              <span class="step-num">03</span>
-              <div><h3>Connect patterns thoughtfully</h3><p>Summarize spatial data and discuss what the analysis can—and cannot—tell us.</p></div>
-            </article>
-          </div>
-        </div>
-
-        <aside>
-          <p class="section-label">Start exploring</p>
-          <div class="source-card">
-            <h3>Follow the analysis</h3>
-            <p>Open the project notebook to explore the code, data workflow, and questions behind this map.</p>
-            <div class="source-links">
-              <a class="text-link" href="https://github.com/yibouali/glspatialmodule/blob/main/notebook.ipynb">Open the notebook ↗</a>
-              <a class="text-link" href="https://github.com/yibouali/glspatialmodule/blob/main/rubric.md">View learning rubric ↗</a>
-            </div>
-          </div>
-          <div class="source-card" style="margin-top:14px">
-            <h3>Data &amp; further reading</h3>
-            <p>District boundaries are from the Mapping Inequality project. Read the archive’s introduction for historical context and documentation.</p>
-            <div class="source-links">
-              <a class="text-link" href="https://dsl.richmond.edu/panorama/redlining/">Mapping Inequality ↗</a>
-              <a class="text-link" href="https://doi.org/10.1126/science.aay4497">Schell et al. (2020) ↗</a>
-            </div>
-          </div>
-          <p class="note">The map is an educational visualization of archived records. Historical categories reflect the terminology of their time and the discriminatory system that produced them. The map does not establish present-day causal relationships.</p>
-        </aside>
-      </section>
-    </main>
-
-    <footer>
-      <span>Spatial Fieldnotes · Oakland, CA</span>
-      <span>Map tiles © OpenStreetMap contributors · Boundaries © Mapping Inequality</span>
-    </footer>
-
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""
-    ></script>
-    <script>
-      const colors = { A: "#4daf4a", B: "#377eb8", C: "#ffff33", D: "#e41a1c" };
-      const dataUrl = "https://dsl.richmond.edu/panorama/redlining/static/citiesData/CAOakland1937/geojson.json";
-      const status = document.getElementById("map-status");
-      const map = L.map("map", { scrollWheelZoom: false }).setView([37.80, -122.27], 11);
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-
-      function districtStyle(feature) {
-        const grade = feature.properties.grade;
-        return {
-          color: "#ffffff",
-          weight: 1.2,
-          opacity: 0.9,
-          fillColor: colors[grade] || "#89948c",
-          fillOpacity: 0.62
-        };
-      }
-
-      function popupContent(feature) {
-        const properties = feature.properties;
-        const container = document.createElement("div");
-        const title = document.createElement("p");
-        const detail = document.createElement("p");
-        title.className = "popup-title";
-        detail.className = "popup-detail";
-        title.textContent = properties.name || "Oakland district";
-        detail.textContent = `Historic HOLC grade: ${properties.grade || "Not recorded"}`;
-        container.append(title, detail);
-        return container;
-      }
-
-      fetch(dataUrl)
-        .then((response) => {
-          if (!response.ok) throw new Error(`Data request failed (${response.status})`);
-          return response.json();
-        })
-        .then((geojson) => {
-          const districts = L.geoJSON(geojson, {
-            style: districtStyle,
-            onEachFeature(feature, layer) {
-              layer.bindPopup(popupContent(feature));
-              layer.on({
-                mouseover(event) { event.target.setStyle({ weight: 2.5, fillOpacity: 0.82 }); },
-                mouseout(event) { districts.resetStyle(event.target); }
-              });
-            }
-          }).addTo(map);
-          if (districts.getLayers().length) map.fitBounds(districts.getBounds(), { padding: [18, 18] });
-          status.textContent = `${districts.getLayers().length} archived district boundaries`;
-        })
-        .catch((error) => {
-          status.textContent = "District data could not be loaded. Please try again later.";
-          console.error("Unable to load archived Oakland district boundaries:", error);
-        });
-    </script>
+    <h2>Conclusion: Ecological Consequences of Historical Redlining</h2>
+    <p>The resulting zonal statistics reveal a clear disparity in urban canopy cover across Oakland's historical HOLC security zones. Neighborhoods designated as Grade C ("Definitely Declining") and Grade D ("Hazardous") consistently exhibit significantly lower mean NDVI values relative to Grade A and B zones.</p>
+    <p>These spatial patterns align directly with the structural framework outlined by Schell et al. (2020), demonstrating how historical housing discrimination exerts a lingering legacy effect on urban ecosystems. Because discriminatory policies systematically restricted capital investment in marginalized communities, their ecological impacts—such as diminished vegetation cover, heightened microclimate temperatures, and reduced ecosystem services—persist long after formal policy repeal. Quantifying these spatial inequities provides the empirical foundation necessary to evaluate environmental justice initiatives and guide targeted, equitable urban planning interventions.</p>
   </body>
 </html>
